@@ -219,18 +219,28 @@ void drawFlag(XInfo &xinfo, GC gc, int x, int y){
 void drawPaused(XInfo &xinfo, GC gc, GC gcBlock){
 	Display *display = xinfo.display;
 	Window win = xinfo.window;
-
+	
+	std::string displayString;
 	int x=0, y=0;
 	if (xinfo.width > 800)  x = (xinfo.width-800)/2;
 	if (xinfo.height > 600) y = (xinfo.height-600)/2;
 
-	XDrawString(display, win, gc, 300+x, 220+y, "Super Anonymous Plumber Bro",27);	
-	XDrawString(display, win, gc, 50+x, 250+y, "Controls:",9);
-	XDrawString(display, win, gc, 80+x, 270+y,"Space Bar-      Pause/Start/Restart game",40);
-	XDrawString(display, win, gc, 80+x, 290+y,"Up/Down Arrow-  Face Forward",28);
-	XDrawString(display, win, gc, 80+x, 310+y,"Left Arrow-     Move Left",25);
-	XDrawString(display, win, gc, 80+x, 330+y,"Right Arrow-    Move Right",26);
-	XDrawString(display, win, gc, 80+x, 350+y,"q-              Exit game",25);
+	displayString = "Super Anonymous Plumber Bro";
+	XDrawString(display, win, gc, 300+x, 220+y, displayString.c_str(),displayString.length());
+	displayString = "Controls:";	
+	XDrawString(display, win, gc, 50+x, 250+y, displayString.c_str(),displayString.length());
+	displayString = "Space Bar-      Pause/Start/Restart game";
+	XDrawString(display, win, gc, 80+x, 270+y, displayString.c_str(),displayString.length());
+	displayString = "Up/Down Arrow-  Face Forward";
+	XDrawString(display, win, gc, 80+x, 290+y,displayString.c_str(),displayString.length());
+	displayString = "Left Arrow-     Move Left";
+	XDrawString(display, win, gc, 80+x, 310+y, displayString.c_str(),displayString.length());
+	displayString = "Right Arrow-    Move Right";
+	XDrawString(display, win, gc, 80+x, 330+y, displayString.c_str(),displayString.length());
+	displayString = "j-              Jump";
+	XDrawString(display, win, gc, 80+x, 350+y, displayString.c_str(), displayString.length());
+	displayString = "q-              Exit game";
+	XDrawString(display, win, gc, 80+x, 370+y,displayString.c_str(),displayString.length());
 
 	for (int i=0;i<11;i++){
 		drawBlock(xinfo, gc, (50*i)+100, 450);

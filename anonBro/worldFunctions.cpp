@@ -30,7 +30,7 @@ class world{
 	bool update(bool gameOver);
 };
 
-//Sets up inital positions of blocks, not Mario, sun/moon, etc. Function returns the number of blocks of the 48 available that are used on-screen
+//Sets up inital positions of blocks, not-Mario, sun/moon, etc. Function returns the number of blocks of the 48 available that are used on-screen
 void world::init(){
 	int i=0;
 	blocks[i].init(i,500);
@@ -56,7 +56,7 @@ void world::init(){
 	BillLocal=rand()%14;
 	while (BillLocal==spikeLocal || BillLocal==coinLocal || BillLocal==flushroomLocal){BillLocal=rand()%14;}
 	
-	//blocks are initiated to create the screen's floor, such that no block column is more than 1 block height greater than the last. To create more level ground each column of blocks has around a 1/3 chance of being the same height as the one before. Items are initiated at their predetermined positions on top of the block columns
+	//blocks are initiated to create the screen's floor, such that no block column is more than 1 block-height greater than the last. To create more level ground each column of blocks has around a 1/3 chance of being the same height as the one before. Items are initiated at their predetermined positions on top of the block columns
 	for (row=1;row<15;row++){
 		randomNum=rand()%3;
 		if (randomNum==0) columnHeight=heightOfLast;
@@ -111,7 +111,7 @@ void world::init(){
 void world::nextCreate(){
 	numScreens++;
 	if (numScreens == 2) flag.init(750+750,300);
-	if (numScreens == 3){	//not Mario has reached an end flag. not Mario's score is updated, and difficulty is increased (Bullets move faster and blocks tend towards more bottomless pits)
+	if (numScreens == 3){	//not-Mario has reached an end flag. not-Mario's score is updated, and difficulty is increased (Bullets move faster and blocks tend towards more bottomless pits)
 		Mario.levelUp();
 		numScreens=0;
 		difficulty++;
@@ -245,11 +245,10 @@ bool world::update(bool gameOver){
 		next();
 	}
 
-	Mario.jumping();
-	Mario.gravity();
+	Mario.update();
 				
 	for (int i=0;i<numBlocks;i++){
-		if (!gameOver && Mario.hit(blocks[i].posx(),blocks[i].posy(), 50, 50)){	//basic collision statement for not Mario and every block on screen
+		if (!gameOver && Mario.hit(blocks[i].posx(),blocks[i].posy(), 50, 50)){	//basic collision statement for not-Mario and every block on screen
 			Mario.reposition(blocks[i].posx(), blocks[i].posy());
 		}
 		bBill.bulletCollide(blocks[i].posx(),blocks[i].posy(),50,50);	//basic collision statement for bullet and every block on screen
@@ -271,7 +270,7 @@ bool world::update(bool gameOver){
 		mushrooms.init(-100,-100);
 		Mario.itemPickup(2);
 	} 
-	if (!Mario.invulnerable()){	//enemy collision statements, ignored if not Mario is invulnerable
+	if (!Mario.invulnerable()){	//enemy collision statements, ignored if not-Mario is invulnerable
 		if (Mario.hit(spikes.posx()+5, spikes.posy()+40, 40, 10)){
 			Mario.isHurt();
 		}
@@ -280,7 +279,7 @@ bool world::update(bool gameOver){
 			Mario.isHurt();
 		}
 	}
-	if (Mario.posx() > 748){	//determines if not Mario has reached the end of the screen
+	if (Mario.posx() > 748){	//determines if not-Mario has reached the end of the screen
 		levelMove=true;
 		nextCreate();
 	}

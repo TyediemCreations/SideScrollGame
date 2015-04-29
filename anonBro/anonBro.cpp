@@ -18,8 +18,6 @@ CS 349- Assignment 1
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-//#include "drawingFunctions.cpp"
-//#include "classFunctions.cpp"
 #include "worldFunctions.cpp"
 
 using namespace std;
@@ -58,7 +56,7 @@ void initX(int argc, char *argv[], XInfo &xInfo) {
 	XSizeHints hints;
 	unsigned long white, black;
 
-   /*
+       /*
 	* Display opening uses the DISPLAY	environment variable.
 	* It can go wrong if DISPLAY isn't set, or you don't have permission.
 	*/	
@@ -67,7 +65,7 @@ void initX(int argc, char *argv[], XInfo &xInfo) {
 		error( "Can't open display." );
 	}
 	
-   /*
+       /*
 	* Find out some things about the display you're using.
 	*/
 	xInfo.screen = DefaultScreen( xInfo.display );
@@ -130,10 +128,10 @@ void initX(int argc, char *argv[], XInfo &xInfo) {
 	                     1, LineSolid, CapButt, JoinRound);
 
 	/*
-    	   * Tell the window manager what input you want.
+    	 * Tell the window manager what input you want.
    	 */
     	XSelectInput( xInfo.display, xInfo.window,
-                ButtonPressMask | KeyPressMask | ExposureMask | StructureNotifyMask);
+                ButtonPressMask | KeyPressMask | KeyReleaseMask| ExposureMask | StructureNotifyMask);
 	/*
 	 * Put the window on the screen.
 	 */
@@ -184,6 +182,7 @@ void eventLoop(XInfo &xinfo, int MarioMovementSpeed, int MarioJumpingSpeed, int 
 	bool gameOver = false;
 	bool notTooSmall = true;
 	bool levelMove = false;
+	bool movingLeft = false,movingRight=false;
 	int i, displaceX=0, displaceY=0;
 	int score,totalScore;
 
@@ -214,16 +213,26 @@ void eventLoop(XInfo &xinfo, int MarioMovementSpeed, int MarioJumpingSpeed, int 
 			case ConfigureNotify:
 				notTooSmall = handleResize(xinfo, event);
 			break;
-        		case KeyPress:	//such that a relevant key press is one of: SPACE (start/pause), q (quit), arrow keys (moves Mario), j (Mario jumps)
+			case KeyRelease :
+				i = XLookupString( (XKeyEvent *)&event, text, BufferSize, &key, 0 );
+				
+
+				
+				if ((key >= XK_Left) && (key <= XK_Down)) {
+					movingLeft = false;
+					movingRight = false;
+				}	
+			break;
+        		case KeyPress:	//such that a relevant key press is one of: SPACE (start/pause), q (quit), arrow keys (moves not-Mario), j (not-Mario jumps)
 			
-        			int i = XLookupString( (XKeyEvent *)&event, text, BufferSize, &key, 0 );
+        			i = XLookupString( (XKeyEvent *)&event, text, BufferSize, &key, 0 );
         			if ( i == 1 && text[0] == 'q' ){   
 					error( "Terminated normally." );
 					XFreePixmap(display,pixmap);
             				XCloseDisplay(xinfo.display);
         			}
 				if ( i == 1 && text[0] == 'j' &&!paused && !gameOver && !Mario.hurting() && !levelMove){ 
-					Mario.jump();
+					Mario.newJump();
         			}
 				else if (key==XK_space){
 					if (paused) {
@@ -236,19 +245,23 @@ void eventLoop(XInfo &xinfo, int MarioMovementSpeed, int MarioJumpingSpeed, int 
 					}
 					else paused = true;
 				}
-				else if ((key >= XK_Left) && (key <= XK_Down)&&!paused && !gameOver && !Mario.hurting() && !levelMove){
+				if ((key >= XK_Left) && (key <= XK_Down)&&!paused && !gameOver && !Mario.hurting() && !levelMove){
 					if (key == XK_Left){
-						Mario.moveLeft();
+						movingLeft=true;
 					}
 					else if (key == XK_Right){
-						Mario.moveRight();
+						movingRight=true;
 					}
 					else Mario.moveOther();
 				}
         		break;
+
+			
 			}
 		}
-		
+		if (movingLeft) Mario.moveLeft();
+		if (movingRight) Mario.moveRight();		
+
 		unsigned long end = now();
 		if (end - lastRepaint > 1000000/FPS) {
 			XClearWindow(xinfo.display, xinfo.window);
@@ -265,7 +278,7 @@ void eventLoop(XInfo &xinfo, int MarioMovementSpeed, int MarioJumpingSpeed, int 
 				
 				score = Mario.getScore(0);
 				totalScore = Mario.getScore(1);
-				if (score < 0) {score=0; gameOver=true; Mario.gameOver();}	//if not Mario's score goes beneath 0, it is game over
+				if (score < 0) {score=0; gameOver=true; Mario.gameOver();}	//if not-Mario's score goes beneath 0, it is game over
 				if (notTooSmall){
 					displaceX = (xinfo.width-800)/2;
 					displaceY = (xinfo.height-600)/2;
