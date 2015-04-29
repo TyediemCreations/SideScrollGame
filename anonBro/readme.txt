@@ -3,8 +3,10 @@ CS 349- Assignment 1
 	 20393111
     September 27-29, 2013
 
-Program is accessible through the 'PlumberBroA1' directory via the command 'make run'.
-Mario's movement speed, jumping speed, the sun's movement speed and the frame rate are tuneable by altering the parameter values in the makefile (currently set to default values. )
+This assignment involved the creation of a simple sidescrolling game using Xlib, and focussed on the use of animation.
+
+Program is accessible via the command 'make run'.
+'Mario's' movement speed, jumping speed, the sun's movement speed and the frame rate are tuneable by altering the parameter values in the makefile (currently set to default values. )
 
 Enhancements include:
 	-pseudo-randomly generated levels tending towards increased difficulty the farther the player progresses accross them
